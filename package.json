@@ -1,0 +1,341 @@
+{
+  "name": "agentchat-electron",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AgentCHAT - Multi-Agent AI Conversation Desktop App",
+  "author": "J. Michaels <noreply@github.com>",
+  "main": "src/main.cjs",
+  "homepage": "https://github.com/sanchez314c/agent-chat#readme",
+  "scripts": {
+    "start": "electron . --no-sandbox",
+    "dev": "vite --port 58743",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 10",
+    "preview": "vite preview",
+    "electron": "wait-on tcp:58743 && cross-env NODE_ENV=development electron . --no-sandbox",
+    "electron:dev": "concurrently \"npm run dev\" \"npm run electron\"",
+    "electron:pack": "electron-builder",
+    "electron:preview": "npm run build && electron .",
+    "dist": "npm run build && electron-builder --mac --win --linux",
+    "dist:all": "npm run build && electron-builder --mac --win --linux --publish=never",
+    "dist:current": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:mac:all": "npm run build && electron-builder --mac --x64 --arm64",
+    "dist:mac:store": "npm run build && electron-builder --mac --config.mac.target=mas",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:win:all": "npm run build && electron-builder --win --x64 --ia32 --arm64",
+    "dist:win:msi": "npm run build && electron-builder --win --config.win.target=msi",
+    "dist:win:portable": "npm run build && electron-builder --win --config.win.target=portable",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:linux:all": "npm run build && electron-builder --linux --x64 --arm64 --armv7l",
+    "dist:linux:appimage": "npm run build && electron-builder --linux --config.linux.target=AppImage",
+    "dist:linux:deb": "npm run build && electron-builder --linux --config.linux.target=deb",
+    "dist:linux:rpm": "npm run build && electron-builder --linux --config.linux.target=rpm",
+    "dist:linux:snap": "npm run build && electron-builder --linux --config.linux.target=snap",
+    "dist:linux:tar": "npm run build && electron-builder --linux --config.linux.target=tar.xz",
+    "dist:maximum": "npm run build && electron-builder --mac --win --linux --x64 --arm64 --ia32 --armv7l",
+    "pack": "npm run build && electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps || true",
+    "build-clean": "./scripts/compile-build-dist.sh --no-temp-clean --no-bloat-check"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "lucide-react": "^0.263.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.4.14",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.4.11",
+    "electron-builder": "^26.8.1",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.0.2",
+    "vite": "^5.4.0",
+    "wait-on": "^7.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanchez314c/agent-chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sanchez314c/agent-chat/issues"
+  },
+  "build": {
+    "appId": "com.agentchat.desktop",
+    "productName": "AgentCHAT",
+    "copyright": "Copyright © 2026 J. Michaels",
+    "directories": {
+      "output": "dist",
+      "buildResources": "resources"
+    },
+    "files": [
+      "dist/renderer/**/*",
+      "src/main.cjs",
+      "src/preload.cjs",
+      "!**/*.ts",
+      "!**/*.map",
+      "!**/*.md",
+      "!**/test/**",
+      "!**/tests/**",
+      "!**/__tests__/**",
+      "!**/spec/**",
+      "!**/docs/**",
+      "!**/README*",
+      "!**/CHANGELOG*",
+      "!**/LICENSE*",
+      "!**/.git/**",
+      "!**/.vscode/**",
+      "!**/node_modules/.cache/**",
+      "!**/build-temp/**"
+    ],
+    "compression": "maximum",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "resources/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "resources/entitlements.mac.plist",
+      "entitlementsInherit": "resources/entitlements.mac.plist",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
+        },
+        {
+          "target": "pkg",
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
+        }
+      ]
+    },
+    "mas": {
+      "category": "public.app-category.productivity",
+      "icon": "resources/icon.icns",
+      "hardenedRuntime": true,
+      "entitlements": "resources/entitlements.mas.plist",
+      "entitlementsInherit": "resources/entitlements.mas.inherit.plist",
+      "target": {
+        "target": "mas",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "win": {
+      "icon": "resources/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        },
+        {
+          "target": "appx",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico",
+      "installerHeaderIcon": "resources/icon.ico",
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AgentCHAT"
+    },
+    "msi": {
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "upgradeCode": "b4e4df22-9a54-46d4-8df6-97b1db047723"
+    },
+    "portable": {
+      "requestExecutionLevel": "user"
+    },
+    "appx": {
+      "applicationId": "AgentCHAT",
+      "backgroundColor": "#464646",
+      "displayName": "AgentCHAT",
+      "identityName": "AgentChat.AgentCHAT",
+      "publisherDisplayName": "AgentCHAT",
+      "publisher": "CN=AgentCHAT"
+    },
+    "linux": {
+      "icon": "resources/icons",
+      "category": "Utility",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "snap",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "tar.xz",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
+        }
+      ],
+      "desktop": {
+        "entry": {
+          "StartupNotify": "true",
+          "Type": "Application"
+        }
+      }
+    },
+    "deb": {
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxss1",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libuuid1",
+        "libsecret-1-0"
+      ]
+    },
+    "rpm": {
+      "depends": [
+        "gtk3",
+        "libnotify",
+        "nss",
+        "libXScrnSaver",
+        "libXtst",
+        "xdg-utils",
+        "at-spi2-core",
+        "libuuid",
+        "libsecret"
+      ]
+    },
+    "snap": {
+      "grade": "stable",
+      "summary": "Multi-Agent AI Conversation Desktop App",
+      "confinement": "strict",
+      "base": "core22"
+    },
+    "appImage": {},
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "sanchez314c",
+        "repo": "agent-chat"
+      }
+    ]
+  }
+}
