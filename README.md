@@ -1,41 +1,11 @@
-####################################################################################
-#                                                                                  #
-#   ██████╗ ███████╗████████╗    ███████╗██╗    ██╗██╗███████╗████████╗██╗   ██╗ #
-#  ██╔════╝ ██╔════╝╚══██╔══╝    ██╔════╝██║    ██║██║██╔════╝╚══██╔══╝╚██╗ ██╔╝ #
-#  ██║  ███╗█████╗     ██║       ███████╗██║ █╗ ██║██║█████╗     ██║    ╚████╔╝  #
-#  ██║   ██║██╔══╝     ██║       ╚════██║██║███╗██║██║██╔══╝     ██║     ╚██╔╝   #
-#  ╚██████╔╝███████╗   ██║       ███████║╚███╔███╔╝██║██╗         ██║      ██║    #
-#   ╚═════╝ ╚══════╝   ╚═╝       ╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝         ╚═╝      ╚═╝    #
-#                                                                                  #
-####################################################################################
-#
-# Project Name: AgentCHAT Desktop
-#
-# Author: @spacewelder314
-#
-# Date Created: 2025-08-21
-#
-# Last Modified: 2025-09-01
-#
-# Version: 1.0.0
-#
-# Description: Multi-Agent AI Conversation Desktop Application - Chat with multiple 
-#              AI agents simultaneously in an intuitive, modern interface
-#
-# Language/Framework: TypeScript, React, Electron, Vite, Tailwind CSS
-#
-# Usage: ./build-release-run.sh or npm run electron:dev
-#
-# Dependencies: Node.js 16+, Electron 25, React 18, TypeScript, Vite 4
-#
-# GitHub: https://github.com/spacewelder314/AgentCHAT
-#
-# Notes: Cross-platform desktop app supporting Windows, macOS, and Linux
-#         Supports Claude, GPT-4, Gemini, and OpenRouter AI providers
-#
-####################################################################################
-
 # AgentCHAT Desktop
+
+> Multi-agent AI conversation desktop application built with Electron, React, and TypeScript
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
+![TypeScript](https://img.shields.io/badge/typescript-5.0+-blue.svg)
 
 A powerful multi-agent AI conversation desktop application built with Electron, React, and TypeScript. Engage with multiple AI agents simultaneously in an intuitive, modern interface.
 
