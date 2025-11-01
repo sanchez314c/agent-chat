@@ -70,4 +70,7 @@ package.json.backup.*
 # Phase-specific documentation (keep in docs/)
 PHASE*_REPORT.md
 PHASE*_SUMMARY.md
-ISSUES_REMEDIATION_PLAN.mdarchive/
+ISSUES_REMEDIATION_PLAN.md
+
+# Archive folder
+archive/
