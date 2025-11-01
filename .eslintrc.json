@@ -1,17 +1,170 @@
 {
   "root": true,
-  "env": { "browser": true, "es2020": true, "node": true },
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true,
+    "jest": true
+  },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+
+
+    "plugin:import/recommended",
+    "plugin:import/typescript"
   ],
-  "ignorePatterns": ["dist", "node_modules", "build", "release"],
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "build",
+    "release",
+    "coverage",
+    "*.config.js",
+    "*.config.ts"
+  ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "security",
+    "sonarjs",
+    "import"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
+  },
   "rules": {
-    "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/no-explicit-any": "off",
-    "react-hooks/exhaustive-deps": "warn"
-  }
+    // TypeScript rules
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/prefer-const": "error",
+    "@typescript-eslint/no-var-requires": "error",
+
+    // React rules
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error",
+
+    // Security rules
+    "security/detect-object-injection": "warn",
+    "security/detect-non-literal-regexp": "off",
+    "security/detect-unsafe-regex": "error",
+    "security/detect-buffer-noassert": "error",
+    "security/detect-child-process": "warn",
+    "security/detect-disable-mustache-escape": "error",
+    "security/detect-eval-with-expression": "error",
+    "security/detect-no-csrf-before-method-override": "error",
+    "security/detect-non-literal-fs-filename": "warn",
+    "security/detect-non-literal-require": "warn",
+    "security/detect-possible-timing-attacks": "warn",
+    "security/detect-pseudoRandomBytes": "error",
+
+    // SonarJS rules (code quality)
+    "sonarjs/cognitive-complexity": ["warn", 15],
+    "sonarjs/max-params": ["warn", 5],
+    "sonarjs/no-duplicate-string": "warn",
+    "sonarjs/no-identical-functions": "error",
+    "sonarjs/no-collapsible-if": "error",
+    "sonarjs/no-all-duplicated-branches": "error",
+    "sonarjs/no-collection-size-mischeck": "error",
+    "sonarjs/no-element-overwrite": "error",
+    "sonarjs/no-empty-collection": "error",
+    "sonarjs/no-extra-arguments": "error",
+    "sonarjs/no-ignored-return": "warn",
+    "sonarjs/no-magic-numbers": ["warn", { "ignore": [0, 1, 2, -1] }],
+    "sonarjs/no-redundant-boolean": "error",
+    "sonarjs/no-redundant-jump": "error",
+    "sonarjs/no-same-line-conditional": "error",
+    "sonarjs/no-unused-collection": "error",
+    "sonarjs/no-use-of-empty-return-value": "error",
+    "sonarjs/no-useless-catch": "error",
+    "sonarjs/prefer-immediate-return": "warn",
+    "sonarjs/prefer-object-literal": "warn",
+
+    // Import rules for consistency
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "import/no-duplicates": "error",
+    "import/no-unresolved": "error",
+    "import/no-cycle": "error",
+    "import/no-self-import": "error",
+    "import/no-useless-path-segments": "error",
+
+    // General code quality
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-debugger": "error",
+    "no-alert": "error",
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-script-url": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "object-shorthand": "error",
+    "prefer-template": "error",
+    "prefer-arrow-callback": "error",
+    "arrow-spacing": "error",
+    "comma-dangle": ["error", "never"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "semi": ["error", "always"],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "max-len": ["warn", { "code": 100, "ignoreUrls": true }],
+    "complexity": ["warn", 10],
+    "max-depth": ["warn", 4],
+    "max-lines": ["warn", 300],
+    "max-lines-per-function": ["warn", 50]
+  },
+  "overrides": [
+    {
+      "files": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
+      "env": { "jest": true },
+      "rules": {
+        "sonarjs/no-duplicate-string": "off",
+        "sonarjs/no-magic-numbers": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "security/detect-object-injection": "off"
+      }
+    },
+    {
+      "files": ["src/main.cjs", "src/preload.cjs"],
+      "parser": "espree",
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "commonjs"
+      },
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }

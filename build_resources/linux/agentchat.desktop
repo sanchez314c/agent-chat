@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=AgentCHAT
+Comment=Multi-Agent AI Conversation Desktop App
+Exec=agentchat-electron
+Icon=agentchat
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=true

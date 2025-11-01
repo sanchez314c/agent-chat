@@ -1,4 +1,4 @@
-name: CI
+name: CI Pipeline
 
 on:
   push:
@@ -7,51 +7,150 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  lint:
+    name: Lint Code
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v4
+
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
-        
+
     - name: Install dependencies
       run: npm ci
-      
-    - name: Run linter
+
+    - name: Run ESLint
       run: npm run lint
-      
+
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run TypeScript compiler
+      run: npx tsc --noEmit
+
+  build-test:
+    name: Build Application
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
     - name: Build application
       run: npm run build
 
-  build-test:
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: dist/
+        retention-days: 7
+
+  electron-test:
+    name: Test Electron Build
     runs-on: ${{ matrix.os }}
-    
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        
+
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v4
+
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
-        
+
     - name: Install dependencies
       run: npm ci
-      
-    - name: Build and package
-      run: npm run dist
-      
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+
+    - name: Build application
+      run: npm run build
+
+    - name: Build Electron app
+      run: npm run pack
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
       with:
-        name: agentchat-${{ matrix.os }}
-        path: dist/
+        name: electron-${{ matrix.os }}
+        path: |
+          dist/
+          release/
+        retention-days: 7
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+
+  check-dist-size:
+    name: Check Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application
+      run: npm run build
+
+    - name: Check bundle size
+      run: |
+        # Check if dist/renderer directory exists and has content
+        if [ -d "dist/renderer" ]; then
+          size=$(du -sh dist/renderer | cut -f1)
+          echo "Bundle size: $size"
+          # Alert if bundle is larger than 10MB
+          if [ $(du -s dist/renderer | cut -f1) -gt 10240 ]; then
+            echo "::warning::Bundle size is larger than 10MB"
+          fi
+        else
+          echo "::error::Build output not found in dist/renderer"
+          exit 1
+        fi

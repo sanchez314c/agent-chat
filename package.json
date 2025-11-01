@@ -6,7 +6,7 @@
   "description": "AgentCHAT - Multi-Agent AI Conversation Desktop App",
   "author": {
     "name": "Jason",
-    "email": "jason@agentchat.app"
+    "email": "sanchez314c@jasonpaulmichaels.co"
   },
   "main": "src/main.cjs",
   "homepage": "./",
@@ -15,6 +15,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 10",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "preview": "vite preview",
     "electron": "wait-on tcp:5173 && cross-env NODE_ENV=development electron .",
     "electron:dev": "concurrently \"npm run dev\" \"npm run electron\"",
@@ -37,12 +40,30 @@
     "dist:linux:rpm": "npm run build && electron-builder --linux --config.linux.target=rpm",
     "dist:linux:snap": "npm run build && electron-builder --linux --config.linux.target=snap",
     "dist:linux:tar": "npm run build && electron-builder --linux --config.linux.target=tar.xz",
-    "dist:maximum": "npm run build && electron-builder --mac --win --linux --x64 --arm64 --ia32 --armv7l",
+    "dist:maximum": "npm run build && electron-builder --mac --win --linux --x64 --arm64 && electron-builder --win --ia32 && electron-builder --linux --ia32 && electron-builder --linux --armv7l",
     "pack": "npm run build && electron-builder --dir",
     "postinstall": "electron-builder install-app-deps",
     "bloat-check": "./scripts/bloat-check.sh",
     "temp-clean": "./scripts/temp-cleanup.sh",
-    "build-clean": "./scripts/compile-build-dist.sh --no-temp-clean --no-bloat-check"
+    "build-clean": "./scripts/build-compile-dist.sh --skip-temp-clean --skip-bloat",
+    "quality": "npm run lint && npm run test && npm run security:check && npm run complexity:check",
+    "validate:security": "./scripts/security-validation.sh",
+    "validate:quality": "./scripts/code-quality-validation.sh",
+    "validate:testing": "./scripts/testing-coverage-validation.sh",
+    "validate:performance": "./scripts/performance-analysis.sh",
+    "cleanup:repo": "./scripts/repository-cleanup.sh",
+    "validate:all": "./scripts/security-validation.sh && ./scripts/code-quality-validation.sh && ./scripts/testing-coverage-validation.sh && ./scripts/performance-analysis.sh",
+    "final:verify": "./scripts/final-verification.sh",
+    "icons:generate": "./scripts/generate-icons.sh",
+    "icons:check": "[ -f 'build-resources/icons/icon.icns' ] && [ -f 'build-resources/icons/icon.ico' ] && [ -f 'build-resources/icons/icon.png' ] && echo '✅ All icons exist' || echo '❌ Missing icons'",
+    "pipeline": "./scripts/build-pipeline.sh",
+    "pipeline:dev": "./scripts/build-pipeline.sh --dev",
+    "pipeline:quick": "./scripts/build-pipeline.sh --skip-testing --skip-performance --skip-cleanup",
+    "pipeline:build-only": "./scripts/build-pipeline.sh --skip-validation",
+    "pipeline:security": "./scripts/build-pipeline.sh --skip-testing --skip-performance",
+    "pipeline:mac": "./scripts/build-pipeline.sh --platforms mac",
+    "pipeline:win": "./scripts/build-pipeline.sh --platforms win",
+    "pipeline:linux": "./scripts/build-pipeline.sh --platforms linux"
   },
   "dependencies": {
     "clsx": "^2.0.0",
@@ -52,24 +73,40 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "audit-ci": "^7.1.0",
     "autoprefixer": "^10.4.14",
     "concurrently": "^8.2.0",
     "cross-env": "^7.0.3",
     "dmg-license": "^1.0.11",
-    "electron": "^25.3.1",
+    "electron": "^39.0.0",
     "electron-builder": "^24.6.3",
     "eslint": "^8.45.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jest": "^27.9.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-sonarjs": "^3.0.5",
+    "eslint-plugin-testing-library": "^7.13.3",
+    "husky": "^9.1.7",
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "lint-staged": "^16.2.6",
+    "npm-audit-resolver": "^3.0.0-RC.0",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3",
+    "ts-jest": "^29.4.5",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
+    "vite": "^7.1.12",
     "vite-plugin-electron": "^0.13.0-beta.3",
     "vite-plugin-electron-renderer": "^0.14.5",
     "wait-on": "^7.0.1"
@@ -84,7 +121,7 @@
     "copyright": "Copyright © 2024 ${author}",
     "directories": {
       "output": "dist",
-      "buildResources": "build-resources"
+      "buildResources": "build_resources"
     },
     "files": [
       "dist/renderer/**/*",
@@ -109,35 +146,47 @@
     "compression": "maximum",
     "mac": {
       "category": "public.app-category.productivity",
-      "icon": "build-resources/icon.icns",
-      "hardenedRuntime": true,
+      "icon": "build_resources/icons/icon.icns",
+      "hardenedRuntime": false,
       "gatekeeperAssess": false,
-      "entitlements": "build-resources/entitlements.mac.plist",
-      "entitlementsInherit": "build-resources/entitlements.mac.plist",
+      "sign": false,
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64", "universal"]
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
         },
         {
           "target": "zip",
-          "arch": ["x64", "arm64", "universal"]
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
         },
         {
           "target": "pkg",
-          "arch": ["x64", "arm64", "universal"]
+          "arch": [
+            "x64",
+            "arm64",
+            "universal"
+          ]
         }
       ]
     },
     "mas": {
       "category": "public.app-category.productivity",
-      "icon": "build-resources/icon.icns",
-      "hardenedRuntime": true,
-      "entitlements": "build-resources/entitlements.mas.plist",
-      "entitlementsInherit": "build-resources/entitlements.mas.inherit.plist",
+      "icon": "build_resources/icons/icon.icns",
+      "hardenedRuntime": false,
       "target": {
         "target": "mas",
-        "arch": ["x64", "arm64"]
+        "arch": [
+          "x64",
+          "arm64"
+        ]
       }
     },
     "dmg": {
@@ -156,35 +205,56 @@
       ]
     },
     "win": {
-      "icon": "build-resources/icon.ico",
+      "icon": "build_resources/icons/icon.ico",
+      "sign": false,
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32", "arm64"]
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
         },
         {
           "target": "msi",
-          "arch": ["x64", "ia32", "arm64"]
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
         },
         {
           "target": "zip",
-          "arch": ["x64", "ia32", "arm64"]
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64", "ia32", "arm64"]
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
         },
         {
           "target": "appx",
-          "arch": ["x64", "ia32", "arm64"]
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
         }
       ]
     },
     "nsis": {
       "oneClick": false,
-      "installerIcon": "build-resources/icon.ico",
-      "uninstallerIcon": "build-resources/icon.ico",
-      "installerHeaderIcon": "build-resources/icon.ico",
+      "installerIcon": "build-resources/icons/icon.ico",
+      "uninstallerIcon": "build-resources/icons/icon.ico",
+      "installerHeaderIcon": "build-resources/icons/icon.ico",
       "allowToChangeInstallationDirectory": true,
       "perMachine": false,
       "createDesktopShortcut": true,
@@ -210,40 +280,66 @@
       "publisher": "CN=AgentCHAT"
     },
     "linux": {
-      "icon": "build-resources/icons",
+      "icon": "build_resources/icons",
       "category": "Utility",
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64", "arm64", "armv7l"]
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64", "arm64", "armv7l"]
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64", "arm64", "armv7l"]
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
         },
         {
           "target": "snap",
-          "arch": ["x64", "arm64", "armv7l"]
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
         },
         {
           "target": "tar.xz",
-          "arch": ["x64", "arm64", "armv7l"]
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
         },
         {
           "target": "tar.gz",
-          "arch": ["x64", "arm64", "armv7l"]
+          "arch": [
+            "x64",
+            "arm64",
+            "armv7l"
+          ]
         }
       ],
       "desktop": {
-        "StartupNotify": "true",
-        "Encoding": "UTF-8",
-        "Icon": "agentchat",
-        "Type": "Application",
-        "Categories": "Utility;"
+        "entry": {
+          "StartupNotify": "true",
+          "Encoding": "UTF-8",
+          "Icon": "agentchat",
+          "Type": "Application",
+          "Categories": "Utility;"
+        }
       }
     },
     "deb": {

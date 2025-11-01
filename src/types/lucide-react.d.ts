@@ -1,0 +1,39 @@
+declare module 'lucide-react' {
+  import { FC, SVGProps } from 'react';
+  export const ChevronDown: FC<SVGProps<SVGSVGElement>>;
+  export const Settings: FC<SVGProps<SVGSVGElement>>;
+  export const Send: FC<SVGProps<SVGSVGElement>>;
+  export const StopCircle: FC<SVGProps<SVGSVGElement>>;
+  export const Pause: FC<SVGProps<SVGSVGElement>>;
+  export const Play: FC<SVGProps<SVGSVGElement>>;
+  export const Save: FC<SVGProps<SVGSVGElement>>;
+  export const Plus: FC<SVGProps<SVGSVGElement>>;
+  export const MessageCircle: FC<SVGProps<SVGSVGElement>>;
+  export const Copy: FC<SVGProps<SVGSVGElement>>;
+  export const Eye: FC<SVGProps<SVGSVGElement>>;
+  export const EyeOff: FC<SVGProps<SVGSVGElement>>;
+  export const Key: FC<SVGProps<SVGSVGElement>>;
+  export const Loader2: FC<SVGProps<SVGSVGElement>>;
+  export const Bot: FC<SVGProps<SVGSVGElement>>;
+  export const Zap: FC<SVGProps<SVGSVGElement>>;
+  export const PlayCircle: FC<SVGProps<SVGSVGElement>>;
+  export const PauseCircle: FC<SVGProps<SVGSVGElement>>;
+  export const StopCircleFill: FC<SVGProps<SVGSVGElement>>;
+  export const MessageSquare: FC<SVGProps<SVGSVGElement>>;
+  export const Thermometer: FC<SVGProps<SVGSVGElement>>;
+  export const Hash: FC<SVGProps<SVGSVGElement>>;
+  export const Percent: FC<SVGProps<SVGSVGElement>>;
+  export const Activity: FC<SVGProps<SVGSVGElement>>;
+  export const Brain: FC<SVGProps<SVGSVGElement>>;
+  export const X: FC<SVGProps<SVGSVGElement>>;
+  export const Trash2: FC<SVGProps<SVGSVGElement>>;
+  export const CheckCircle: FC<SVGProps<SVGSVGElement>>;
+  export const AlertCircle: FC<SVGProps<SVGSVGElement>>;
+  export const Square: FC<SVGProps<SVGSVGElement>>;
+  export const RotateCcw: FC<SVGProps<SVGSVGElement>>;
+  export const FileText: FC<SVGProps<SVGSVGElement>>;
+  export const User: FC<SVGProps<SVGSVGElement>>;
+  export const UserCog: FC<SVGProps<SVGSVGElement>>;
+  export const AlertTriangle: FC<SVGProps<SVGSVGElement>>;
+  // Add more icons as needed
+}

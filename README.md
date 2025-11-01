@@ -5,13 +5,11 @@
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
-![TypeScript](https://img.shields.io/badge/typescript-5.0+-blue.svg)
+![TypeScript](https://img.shields.io/badge/typescript-5.9+-blue.svg)
+![Electron](https://img.shields.io/badge/electron-39.0+-blue.svg)
+![React](https://img.shields.io/badge/react-19.2+-blue.svg)
 
 A powerful multi-agent AI conversation desktop application built with Electron, React, and TypeScript. Engage with multiple AI agents simultaneously in an intuitive, modern interface.
-
-![AgentCHAT Desktop](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
 
 ## ✨ Features
 
@@ -46,46 +44,96 @@ A powerful multi-agent AI conversation desktop application built with Electron, 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 16.0.0 or higher
-- npm 7.0.0 or higher
+- Node.js 18.0.0 or higher
+- npm 8.0.0 or higher
 - API key from at least one supported AI provider
 
 ### One-Command Build & Run
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/spacewelder314/AgentCHAT.git
 cd AgentCHAT
 
-# Build, release, and run with one command!
-./build-release-run.sh
+# Install dependencies
+npm install
+
+# Quick development mode
+npm run electron:dev
+
+# OR check build status with framework tools
+npm run bloat-check
 ```
 
-### Development Mode
+### Comprehensive Build System
 
+#### Development Mode
 ```bash
-# Run in development mode with hot reload
-./build-release-run.sh --dev
+# Fast development with hot reload
+npm run electron:dev
+
+# OR using comprehensive build script
+./scripts/build-compile-dist.sh --help
 ```
 
-### Build Options
+#### Production Builds
 
+**Simple Build (Current Platform)**
 ```bash
-# Build for specific platform
-./build-release-run.sh --platform mac    # macOS only
-./build-release-run.sh --platform win    # Windows only
-./build-release-run.sh --platform linux  # Linux only
-./build-release-run.sh --platform all    # All platforms
-
-# Build without running
-./build-release-run.sh --build-only
-
-# Quick build (skip Vite rebuild)
-./build-release-run.sh --quick
-
-# Clean build
-./build-release-run.sh --clean
+npm run dist:current
 ```
+
+**Platform-Specific Builds**
+```bash
+npm run dist:mac         # macOS (Intel + ARM64 + Universal)
+npm run dist:win         # Windows (x64 + x86 + ARM64)
+npm run dist:linux       # Linux (x64 + ARM64 + ARMv7l)
+```
+
+**Comprehensive All-Platform Build**
+```bash
+# NEW: Complete build system with all variants
+./scripts/build-compile-dist.sh
+
+# Build with bloat analysis and optimization
+./scripts/build-compile-dist.sh --skip-bloat     # Faster build
+./scripts/build-compile-dist.sh --skip-temp-clean # Skip cleanup
+```
+
+**Quick Build Options**
+```bash
+./scripts/build-release-run.sh --platform mac    # macOS only
+./scripts/build-release-run.sh --platform win    # Windows only
+./scripts/build-release-run.sh --platform linux  # Linux only
+./scripts/build-release-run.sh --build-only      # Build without running
+./scripts/build-release-run.sh --quick           # Skip rebuild
+```
+
+### Build Output Locations
+
+Built applications are saved to `dist/` directory:
+
+#### All Platform Variants Generated:
+- **macOS**:
+  - `AgentCHAT-{version}.dmg` (Intel x64)
+  - `AgentCHAT-{version}-arm64.dmg` (Apple Silicon)
+  - `AgentCHAT-{version}-universal.dmg` (Intel + ARM)
+  - `AgentCHAT-{version}.pkg` (macOS installer)
+  - `AgentCHAT-{version}-mac.zip` (Archive)
+
+- **Windows**:
+  - `AgentCHAT Setup {version}.exe` (NSIS installer)
+  - `AgentCHAT-{version}.msi` (Microsoft installer)
+  - `AgentCHAT-{version}-win.zip` (Portable)
+  - `win-x64-unpacked/`, `win-x32-unpacked/`, `win-arm64-unpacked/` (Raw builds)
+
+- **Linux**:
+  - `AgentCHAT-{version}.AppImage` (Universal portable)
+  - `agentchat-electron_{version}_amd64.deb` (Debian/Ubuntu x64)
+  - `agentchat-electron_{version}_arm64.deb` (ARM64)
+  - `agentchat-electron_{version}_armv7l.deb` (ARMv7)
+  - `.rpm`, `.snap`, `.tar.gz`, `.tar.xz` packages available
+  - `linux-unpacked/`, `linux-arm64-unpacked/`, `linux-armv7l-unpacked/` (Raw builds)
 
 ## 📦 Distribution
 
@@ -188,50 +236,79 @@ Each agent can be customized with:
 ### Project Structure
 ```
 AgentCHAT/
-├── 🎯 Core Files
-│   ├── build-release-run.sh # Unified build script
+├── 📄 Core Files
+│   ├── README.md            # Main documentation
+│   ├── LICENSE              # MIT license
 │   ├── package.json         # Dependencies and scripts
-│   ├── index.html           # Entry HTML
-│   └── LICENSE              # MIT license
-├── 🖥️ Electron
-│   ├── electron/            # Electron main process
-│   │   ├── main.cjs        # Application entry point
-│   │   └── preload.cjs     # Secure API bridge
-├── 🎨 Frontend Source
-│   ├── src/                 # React frontend source
-│   │   ├── components/      # UI components
-│   │   │   ├── AgentConfigPanel.tsx
-│   │   │   ├── ConversationPanel.tsx
-│   │   │   ├── MessageBubble.tsx
-│   │   │   ├── StatusBar.tsx
-│   │   │   └── APIKeyModal.tsx
-│   │   ├── services/        # API clients and logic
-│   │   │   ├── APIClient.ts
-│   │   │   └── AgentManager.ts
-│   │   ├── types/           # TypeScript definitions
-│   │   ├── App.tsx          # Main React component
-│   │   ├── main.tsx         # React entry point
-│   │   └── index.css        # Global styles
-├── 🎯 Resources
-│   ├── assets/              # Application icons
-│   │   ├── icon.icns       # macOS icon
-│   │   ├── icon.ico        # Windows icon
-│   │   └── icon.png        # PNG icon
-│   └── public/              # Static assets
-├── 📦 Build Output
-│   ├── dist/                # Vite build output
-│   └── release/             # Packaged applications
-│       └── {version}/       # Version-specific builds
+│   ├── index.html           # Application entry point
+│   └── CLAUDE.md            # Claude Code development guide
 ├── 🔧 Configuration
-│   ├── vite.config.ts       # Vite configuration
-│   ├── tailwind.config.js   # Tailwind CSS config
-│   ├── tsconfig.json        # TypeScript config
-│   └── postcss.config.js    # PostCSS config
-└── 📚 Development
-    └── dev/                 # Development files
-        ├── build.sh.old     # Legacy build scripts
-        ├── requirements.txt # System requirements
-        └── ...              # Other dev files
+│   ├── vite.config.ts       # Vite build configuration
+│   ├── tailwind.config.js   # Tailwind CSS configuration
+│   ├── tsconfig.json        # TypeScript configuration
+│   ├── tsconfig.node.json   # Node.js TypeScript config
+│   ├── postcss.config.js    # PostCSS configuration
+│   └── .eslintrc.json       # ESLint configuration
+├── 🖥️ Electron Main Process
+│   ├── src/main.cjs         # Electron application entry point
+│   └── src/preload.cjs      # Secure IPC bridge
+├── 🎨 React Frontend (src/)
+│   ├── components/          # UI components
+│   │   ├── AgentConfigPanel.tsx    # Agent configuration
+│   │   ├── ConversationPanel.tsx   # Chat interface
+│   │   ├── MessageBubble.tsx       # Message display
+│   │   ├── StatusBar.tsx           # Status information
+│   │   └── APIKeyModal.tsx         # API key management
+│   ├── services/           # Business logic
+│   │   ├── APIClient.ts            # AI provider API clients
+│   │   └── AgentManager.ts         # Agent orchestration
+│   ├── types/              # TypeScript definitions
+│   │   └── index.ts                # Core type definitions
+│   ├── App.tsx             # Main React application
+│   ├── main.tsx            # React entry point
+│   └── index.css           # Global styles
+├── 📚 Documentation
+│   ├── docs/                # Extended documentation
+│   │   ├── CONTRIBUTING.md   # Contribution guidelines
+│   │   ├── DEVELOPMENT.md    # Development setup
+│   │   ├── SECURITY.md       # Security information
+│   │   ├── TECH-STACK.md     # Technology stack details
+│   │   ├── PRD.md            # Product requirements
+│   │   ├── TODO.md           # Development roadmap
+│   │   ├── LEARNINGS.md      # Project learnings
+│   │   ├── BUILD.md          # Build system documentation
+│   │   ├── FAQ.md            # Frequently asked questions
+│   │   ├── QUICK_START.md    # Quick start guide
+│   │   ├── INSTALLATION.md   # Installation instructions
+│   │   ├── TROUBLESHOOTING.md # Troubleshooting guide
+│   │   └── WORKFLOW.md       # Development workflow
+│   └── .github/             # GitHub configuration
+│       ├── workflows/       # CI/CD workflows
+│       ├── ISSUE_TEMPLATE/  # Issue templates
+│       └── PULL_REQUEST_TEMPLATE.md
+├── 🛠️ Build System
+│   └── scripts/             # Build and utility scripts
+│       ├── build-compile-dist.sh   # Comprehensive all-platform build
+│       ├── build-release-run.sh     # Unified build and run
+│       ├── compile-build-dist.sh    # Production build system
+│       ├── bloat-check.sh           # Build size analysis
+│       └── temp-cleanup.sh          # System cleanup utilities
+├── 🎨 Assets & Resources
+│   ├── build-resources/     # Build assets
+│   │   └── icons/          # Application icons
+│   │       ├── icon.icns    # macOS icon
+│   │       ├── icon.ico     # Windows icon
+│   │       └── icon.png     # PNG source
+│   └── screenshots/         # Application screenshots
+├── 📦 Build Output
+│   ├── dist/                # All built applications and packages
+│   ├── build/               # Temporary build files
+│   └── node_modules/        # Node.js dependencies
+└── 🔧 Development Tools
+    ├── tests/               # Test directories (unit, integration, e2e)
+    ├── .serena/             # Project memories and context
+    ├── .git/                # Git repository
+    └── .github/             # GitHub configuration
 ```
 
 ### Build Script Usage
@@ -351,6 +428,36 @@ We welcome contributions! Please follow these guidelines:
 4. Commit changes: `git commit -m 'Add amazing feature'`
 5. Push to branch: `git push origin feature/amazing-feature`
 6. Open a Pull Request with detailed description
+
+## 📚 Documentation
+
+**📋 Complete Documentation Index**: [Documentation Index](docs/DOCUMENTATION_INDEX.md) - Comprehensive guide to all documentation
+**Phase 4 Status**: ✅ Complete - Repository documentation fully standardized and professional-grade
+
+### 🚀 Getting Started
+- **[Quick Start Guide](docs/QUICK_START.md)** - Get AgentCHAT running in 5 minutes
+- **[Installation Guide](docs/INSTALLATION.md)** - Detailed installation instructions
+- **[FAQ](docs/FAQ.md)** - Frequently asked questions
+
+### 🛠️ Development
+- **[Development Guide](docs/DEVELOPMENT.md)** - Development setup and workflow
+- **[Build & Compile Guide](docs/BUILD_COMPILE.md)** - Comprehensive build documentation
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute
+- **[Development Workflow](docs/WORKFLOW.md)** - Complete development workflow
+
+### 📖 Reference
+- **[API Documentation](docs/API.md)** - API reference and integration guide
+- **[Architecture](docs/ARCHITECTURE.md)** - System architecture and design patterns
+- **[Technology Stack](docs/TECHSTACK.md)** - Technology details and architecture
+- **[Security](SECURITY.md)** - Security information and best practices (also available in [docs/SECURITY.md](docs/SECURITY.md))
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Product Requirements](docs/PRD.md)** - Product specifications and features
+
+### 📋 Project
+- **[Learnings](docs/LEARNINGS.md)** - Development insights and lessons learned
+- **[Code of Conduct](docs/CODE_OF_CONDUCT.md)** - Community guidelines
+- **[Changelog](CHANGELOG.md)** - Version history and updates
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Deployment and distribution instructions
 
 ## 📄 License
 

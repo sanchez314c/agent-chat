@@ -1,4 +1,4 @@
-# Node modules
+# Dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -9,7 +9,9 @@ lerna-debug.log*
 # Build outputs
 dist/
 build/
+build-temp/
 out/
+release/
 *.log
 
 # Electron specific
@@ -17,27 +19,25 @@ electron-builder.yml
 dist_electron/
 .electron-vue
 
-# Development
-*.local
+# Environment files
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+*.local
 
-# IDE
+# IDE and editors
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-.DS_Store
 
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
 
 # Testing
 coverage/
@@ -45,11 +45,6 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
-
-# OS files
-.DS_Store
-Thumbs.db
-Desktop.ini
 
 # Python
 __pycache__/
@@ -64,9 +59,15 @@ env/
 # Temporary files
 *.tmp
 *.temp
+*.bak
+*.backup
+*.backup.*
 .cache/
 
-# Local archive archives
-archive/
-*.zip
-*.tar.gz
+# Backup files
+package.json.backup.*
+
+# Phase-specific documentation (keep in docs/)
+PHASE*_REPORT.md
+PHASE*_SUMMARY.md
+ISSUES_REMEDIATION_PLAN.mdarchive/
