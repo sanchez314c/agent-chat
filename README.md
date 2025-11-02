@@ -9,6 +9,8 @@
 ![Electron](https://img.shields.io/badge/electron-39.0+-blue.svg)
 ![React](https://img.shields.io/badge/react-19.2+-blue.svg)
 
+![AgentCHAT Screenshot](https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/814a456e-a24c-443c-9cd1-60a1e36b13b0/d34d4aaffc6723a7e452781829dfa6ef.jpg?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1762053749&Signature=IFS+9i04VlrXA0428mrI2R2P7o0=)
+
 A powerful multi-agent AI conversation desktop application built with Electron, React, and TypeScript. Engage with multiple AI agents simultaneously in an intuitive, modern interface.
 
 ## ✨ Features
